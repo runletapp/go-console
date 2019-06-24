@@ -1,7 +1,6 @@
 package console
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -41,9 +40,7 @@ func checkSnapshot(t *testing.T, name string, data []byte) {
 	snapshotData, err := ioutil.ReadAll(file)
 	assert.Nil(err)
 
-	if bytes.Compare(data, snapshotData) != 0 {
-		t.Fatalf("Snapshot does not match")
-	}
+	assert.EqualValues(snapshotData, data)
 }
 
 func TestRun(t *testing.T) {
