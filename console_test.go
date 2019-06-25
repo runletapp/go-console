@@ -160,7 +160,7 @@ func TestENV(t *testing.T) {
 
 	args := []string{"env"}
 	if runtime.GOOS == "windows" {
-		args = []string{"cmd", "/c", "echo", "custom_env=%MYENV%"}
+		args = []string{"cmd", "/c", "echo", "MYENV=%MYENV%"}
 	}
 
 	proc, err := New(120, 60)
