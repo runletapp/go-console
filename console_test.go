@@ -129,3 +129,49 @@ func TestWait(t *testing.T) {
 
 	wg.Wait()
 }
+
+func TestCWD(t *testing.T) {
+	assert := assert.New(t)
+
+	args := []string{"pwd"}
+	if runtime.GOOS == "windows" {
+		args = []string{"cmd", "/c", "echo", "%cd%"}
+	}
+
+	proc, err := New(120, 60)
+	assert.Nil(err)
+	defer proc.Close()
+
+	tmpdir, err := ioutil.TempDir("", "go-console_")
+	assert.Nil(err)
+	defer os.RemoveAll(tmpdir)
+
+	assert.Nil(proc.SetCWD(tmpdir))
+
+	assert.Nil(proc.Start(args))
+
+	data, _ := ioutil.ReadAll(proc)
+
+	assert.Contains(string(data), tmpdir)
+}
+
+func TestENV(t *testing.T) {
+	assert := assert.New(t)
+
+	args := []string{"env"}
+	if runtime.GOOS == "windows" {
+		args = []string{"cmd", "/c", "echo", "custom_env=%MYENV%"}
+	}
+
+	proc, err := New(120, 60)
+	assert.Nil(err)
+	defer proc.Close()
+
+	assert.Nil(proc.SetENV([]string{"MYENV=test"}))
+
+	assert.Nil(proc.Start(args))
+
+	data, _ := ioutil.ReadAll(proc)
+
+	assert.Contains(string(data), "MYENV=test")
+}

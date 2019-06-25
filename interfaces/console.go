@@ -22,4 +22,10 @@ type Console interface {
 
 	// Wait waits the process to finish
 	Wait() error
+
+	// SetCWD sets the current working dir of the process
+	SetCWD(cwd string) error
+
+	// SetENV sets environment variables to pass to the child process
+	SetENV(environ []string) error
 }

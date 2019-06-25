@@ -1,6 +1,7 @@
 package console
 
 import (
+	"os"
 	"strings"
 	"syscall"
 
@@ -15,6 +16,9 @@ type consoleWindows struct {
 	initialRows int
 
 	file *winpty.WinPTY
+
+	cwd string
+	env []string
 }
 
 func newNative(cols int, rows int) (Console, error) {
@@ -23,6 +27,9 @@ func newNative(cols int, rows int) (Console, error) {
 		initialRows: rows,
 
 		file: nil,
+
+		cwd: ".",
+		env: os.Environ(),
 	}, nil
 }
 
@@ -31,6 +38,8 @@ func (c *consoleWindows) Start(args []string) error {
 		InitialCols: uint32(c.initialCols),
 		InitialRows: uint32(c.initialRows),
 		Command:     strings.Join(args, " "),
+		Dir:         c.cwd,
+		Env:         c.env,
 	}
 
 	cmd, err := winpty.OpenWithOptions(opts)
@@ -95,4 +104,14 @@ func (c *consoleWindows) Wait() error {
 	_, err := syscall.WaitForSingleObject(syscall.Handle(handle), syscall.INFINITE)
 
 	return err
+}
+
+func (c *consoleWindows) SetCWD(cwd string) error {
+	c.cwd = cwd
+	return nil
+}
+
+func (c *consoleWindows) SetENV(environ []string) error {
+	c.env = append(os.Environ(), environ...)
+	return nil
 }

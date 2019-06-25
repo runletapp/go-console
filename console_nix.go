@@ -19,6 +19,9 @@ type consoleNix struct {
 
 	initialCols int
 	initialRows int
+
+	cwd string
+	env []string
 }
 
 func newNative(cols int, rows int) (Console, error) {
@@ -27,6 +30,9 @@ func newNative(cols int, rows int) (Console, error) {
 		initialRows: rows,
 
 		file: nil,
+
+		cwd: ".",
+		env: os.Environ(),
 	}, nil
 }
 
@@ -37,6 +43,9 @@ func (c *consoleNix) Start(args []string) error {
 		return err
 	}
 	c.cmd = cmd
+
+	cmd.Dir = c.cwd
+	cmd.Env = c.env
 
 	f, err := pty.StartWithSize(cmd, &pty.Winsize{Cols: uint16(c.initialCols), Rows: uint16(c.initialRows)})
 	if err != nil {
@@ -105,4 +114,14 @@ func (c *consoleNix) Wait() error {
 
 	_, err := c.cmd.Process.Wait()
 	return err
+}
+
+func (c *consoleNix) SetCWD(cwd string) error {
+	c.cwd = cwd
+	return nil
+}
+
+func (c *consoleNix) SetENV(environ []string) error {
+	c.env = append(os.Environ(), environ...)
+	return nil
 }
