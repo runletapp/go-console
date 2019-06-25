@@ -2,6 +2,7 @@ package console
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -99,7 +100,7 @@ func TestWait(t *testing.T) {
 
 	var args []string
 	if runtime.GOOS == "windows" {
-		args = []string{"cmd.exe", "/c", "timeout /t 5"}
+		args = []string{"sleep", "5s"}
 	} else {
 		args = []string{"sleep", "5s"}
 	}
@@ -113,9 +114,18 @@ func TestWait(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		proc.Wait()
+		assert.Nil(proc.Wait())
 		wg.Done()
 	}()
+
+	n, _ := io.Copy(os.Stdout, proc)
+
+	var res int64
+	if runtime.GOOS == "windows" {
+		res = 8
+	}
+
+	assert.Equal(int64(res), n)
 
 	wg.Wait()
 }
