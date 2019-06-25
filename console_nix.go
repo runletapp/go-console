@@ -132,3 +132,19 @@ func (c *consoleNix) Pid() (int, error) {
 
 	return c.cmd.Process.Pid, nil
 }
+
+func (c *consoleNix) Kill() error {
+	if c.cmd == nil {
+		return ErrProcessNotStarted
+	}
+
+	return c.cmd.Process.Kill()
+}
+
+func (c *consoleNix) Signal(sig os.Signal) error {
+	if c.cmd == nil {
+		return ErrProcessNotStarted
+	}
+
+	return c.cmd.Process.Signal(sig)
+}

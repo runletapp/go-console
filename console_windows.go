@@ -176,3 +176,41 @@ func (c *consoleWindows) Pid() (int, error) {
 
 	return int(pid), err
 }
+
+func (c *consoleWindows) Kill() error {
+	if c.file == nil {
+		return ErrProcessNotStarted
+	}
+
+	handle := c.file.GetProcHandle()
+	pid, err := c.getProcessIDFromHandle(handle)
+	if err != nil {
+		return err
+	}
+
+	proc, err := os.FindProcess(int(pid))
+	if err != nil {
+		return err
+	}
+
+	return proc.Kill()
+}
+
+func (c *consoleWindows) Signal(sig os.Signal) error {
+	if c.file == nil {
+		return ErrProcessNotStarted
+	}
+
+	handle := c.file.GetProcHandle()
+	pid, err := c.getProcessIDFromHandle(handle)
+	if err != nil {
+		return err
+	}
+
+	proc, err := os.FindProcess(int(pid))
+	if err != nil {
+		return err
+	}
+
+	return proc.Signal(sig)
+}

@@ -32,4 +32,10 @@ type Console interface {
 
 	// Pid returns the pid of the running process
 	Pid() (int, error)
+
+	// Kill kills the process. See exec/Process.Kill
+	Kill() error
+
+	// Signal sends a signal to the process. See exec/Process.Signal
+	Signal(sig os.Signal) error
 }
