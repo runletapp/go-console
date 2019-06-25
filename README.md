@@ -51,7 +51,7 @@ func main() {
 		}
 	}()
 
-	if err := proc.Wait(); err != nil {
+	if _, err := proc.Wait(); err != nil {
 		log.Printf("Wait err: %v\n", err)
 	}
 

@@ -165,3 +165,14 @@ func (c *consoleWindows) SetENV(environ []string) error {
 	c.env = append(os.Environ(), environ...)
 	return nil
 }
+
+func (c *consoleWindows) Pid() (int, error) {
+	if c.file == nil {
+		return 0, ErrProcessNotStarted
+	}
+
+	handle := c.file.GetProcHandle()
+	pid, err := c.getProcessIDFromHandle(handle)
+
+	return int(pid), err
+}

@@ -124,3 +124,11 @@ func (c *consoleNix) SetENV(environ []string) error {
 	c.env = append(os.Environ(), environ...)
 	return nil
 }
+
+func (c *consoleNix) Pid() (int, error) {
+	if c.cmd == nil {
+		return 0, ErrProcessNotStarted
+	}
+
+	return c.cmd.Process.Pid, nil
+}

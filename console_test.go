@@ -176,3 +176,38 @@ func TestENV(t *testing.T) {
 
 	assert.Contains(string(data), "MYENV=test")
 }
+
+func TestPID(t *testing.T) {
+	assert := assert.New(t)
+
+	args := []string{"sleep", "5s"}
+
+	proc, err := New(120, 60)
+	assert.Nil(err)
+
+	assert.Nil(proc.Start(args))
+	defer proc.Close()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		_, err := proc.Wait()
+		assert.Nil(err)
+		wg.Done()
+	}()
+
+	pid, err := proc.Pid()
+	assert.Nil(err)
+	assert.NotEqual(0, pid)
+
+	n, _ := io.Copy(os.Stdout, proc)
+
+	var res int64
+	if runtime.GOOS == "windows" {
+		res = 8
+	}
+
+	assert.Equal(int64(res), n)
+
+	wg.Wait()
+}

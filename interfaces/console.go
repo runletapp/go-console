@@ -29,4 +29,7 @@ type Console interface {
 
 	// SetENV sets environment variables to pass to the child process
 	SetENV(environ []string) error
+
+	// Pid returns the pid of the running process
+	Pid() (int, error)
 }
