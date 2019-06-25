@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"io"
+	"os"
 )
 
 // Console communication interface
@@ -21,7 +22,7 @@ type Console interface {
 	Start(args []string) error
 
 	// Wait waits the process to finish
-	Wait() error
+	Wait() (*os.ProcessState, error)
 
 	// SetCWD sets the current working dir of the process
 	SetCWD(cwd string) error

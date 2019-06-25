@@ -107,13 +107,12 @@ func (c *consoleNix) GetSize() (int, int, error) {
 	return cols, rows, err
 }
 
-func (c *consoleNix) Wait() error {
+func (c *consoleNix) Wait() (*os.ProcessState, error) {
 	if c.cmd == nil {
-		return ErrProcessNotStarted
+		return nil, ErrProcessNotStarted
 	}
 
-	_, err := c.cmd.Process.Wait()
-	return err
+	return c.cmd.Process.Wait()
 }
 
 func (c *consoleNix) SetCWD(cwd string) error {
