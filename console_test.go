@@ -49,7 +49,7 @@ func TestRun(t *testing.T) {
 
 	var args []string
 	if runtime.GOOS == "windows" {
-		args = []string{"cmd.exe", "/c", "echo windows"}
+		args = []string{"echo", "windows"}
 	} else {
 		args = []string{"printf", "with \033[0;31mCOLOR\033[0m"}
 	}
