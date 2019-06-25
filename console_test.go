@@ -28,7 +28,7 @@ func createSnapshot(t *testing.T, filename string, data []byte) {
 func checkSnapshot(t *testing.T, name string, data []byte) {
 	assert := assert.New(t)
 
-	snapshot := fmt.Sprintf(path.Join("snapshots", runtime.GOOS, "TestRun.snap"))
+	snapshot := fmt.Sprintf(path.Join("snapshots", runtime.GOOS, "%s.snap"), name)
 	assert.Nil(os.MkdirAll(path.Dir(snapshot), 0755))
 
 	file, err := os.Open(snapshot)
@@ -67,7 +67,7 @@ func TestRun(t *testing.T) {
 func TestSize(t *testing.T) {
 	assert := assert.New(t)
 
-	args := []string{"go", "run", path.Join("testing", "size", "size.go")}
+	args := []string{"stty", "size"}
 
 	proc, err := New(120, 60)
 	assert.Nil(err)
@@ -76,13 +76,13 @@ func TestSize(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	assert.Equal("120 60\r\n", string(data))
+	checkSnapshot(t, "TestSize", data)
 }
 
 func TestSize2(t *testing.T) {
 	assert := assert.New(t)
 
-	args := []string{"go", "run", path.Join("testing", "size", "size.go")}
+	args := []string{"stty", "size"}
 
 	proc, err := New(60, 120)
 	assert.Nil(err)
@@ -91,7 +91,7 @@ func TestSize2(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	assert.Equal("60 120\r\n", string(data))
+	checkSnapshot(t, "TestSize2", data)
 }
 
 func TestWait(t *testing.T) {

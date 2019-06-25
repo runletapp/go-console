@@ -1,7 +1,6 @@
 package console
 
 import (
-	"log"
 	"strings"
 	"syscall"
 
@@ -92,7 +91,6 @@ func (c *consoleWindows) Wait() error {
 	}
 
 	handle := c.file.GetProcHandle()
-	log.Printf("Handle: %v", handle)
 
 	_, err := syscall.WaitForSingleObject(syscall.Handle(handle), syscall.INFINITE)
 

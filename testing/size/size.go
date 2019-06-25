@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
-
-	"golang.org/x/crypto/ssh/terminal"
+	"os"
+	"os/exec"
 )
 
 func main() {
-	width, height, err := terminal.GetSize(0)
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%d %d\n", width, height)
+
+	fmt.Printf(string(out))
 }
