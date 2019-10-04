@@ -65,7 +65,11 @@ func TestRun(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	checkSnapshot(t, "TestRun", data)
+	if runtime.GOOS == "windows" {
+		assert.Truef(bytes.Contains(data, []byte("windows")), "Does not contain output")
+	} else {
+		checkSnapshot(t, "TestRun", data)
+	}
 }
 
 func TestSize(t *testing.T) {
