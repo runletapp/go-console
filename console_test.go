@@ -1,6 +1,7 @@
 package console
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -79,7 +80,7 @@ func TestSize(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	checkSnapshot(t, "TestSize", data)
+	assert.Truef(bytes.Contains(data, []byte("60 120")), "Does not contain size")
 }
 
 func TestSize2(t *testing.T) {
@@ -94,7 +95,7 @@ func TestSize2(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	checkSnapshot(t, "TestSize2", data)
+	assert.Truef(bytes.Contains(data, []byte("120 60")), "Does not contain size")
 }
 
 func TestWait(t *testing.T) {
