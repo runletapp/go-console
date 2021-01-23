@@ -74,6 +74,10 @@ func TestRun(t *testing.T) {
 }
 
 func TestSize(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skipf("skipped in windows")
+	}
+
 	assert := assert.New(t)
 
 	args := []string{"stty", "size"}
@@ -89,6 +93,10 @@ func TestSize(t *testing.T) {
 }
 
 func TestSize2(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skipf("skipped in windows")
+	}
+
 	assert := assert.New(t)
 
 	args := []string{"stty", "size"}
