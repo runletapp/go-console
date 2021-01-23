@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/kr/pty"
+	"github.com/creack/pty"
 
 	"github.com/runletapp/go-console/interfaces"
 )

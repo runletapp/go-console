@@ -60,7 +60,8 @@ func TestRun(t *testing.T) {
 	proc, err := New(120, 60)
 	assert.Nil(err)
 
-	assert.Nil(proc.Start(args))
+	err = proc.Start(args)
+	assert.Nil(err)
 	defer proc.Close()
 
 	data, _ := ioutil.ReadAll(proc)
