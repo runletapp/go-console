@@ -79,7 +79,7 @@ func TestSize(t *testing.T) {
 
 	args := []string{"stty", "size"}
 	if runtime.GOOS == "windows" {
-		args = []string{"powershell.exe", "-command", "echo \"$($Host.UI.RawUI.WindowSize.Height)  $($Host.UI.RawUI.WindowSize.Width)\""}
+		args = []string{"powershell.exe", "-command", "echo \"$($Host.UI.RawUI.BufferSize.Height)  $($Host.UI.RawUI.BufferSize.Width)\""}
 	}
 
 	proc, err := New(120, 60)
@@ -104,7 +104,7 @@ func TestSize2(t *testing.T) {
 
 	args := []string{"stty", "size"}
 	if runtime.GOOS == "windows" {
-		args = []string{"powershell.exe", "-command", "echo \"$($Host.UI.RawUI.WindowSize.Height)  $($Host.UI.RawUI.WindowSize.Width)\""}
+		args = []string{"powershell.exe", "-command", "echo \"$($Host.UI.RawUI.BufferSize.Height)  $($Host.UI.RawUI.BufferSize.Width)\""}
 	}
 
 	proc, err := New(60, 120)
