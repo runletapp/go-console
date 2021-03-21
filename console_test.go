@@ -245,7 +245,7 @@ func TestPID(t *testing.T) {
 func TestKill(t *testing.T) {
 	assert := assert.New(t)
 
-	args := []string{"sleep", "1h"}
+	args := []string{"sleep", "3600"}
 	if runtime.GOOS == "windows" {
 		args = []string{"powershell.exe", "-command", "\"sleep 3600\""}
 	}
@@ -268,7 +268,8 @@ func TestKill(t *testing.T) {
 		}
 
 		signal := state.Sys().(syscall.WaitStatus).Signal()
-		assert.Equal(xSignal, signal.String())
+		sig := signal.String()
+		assert.Equal(xSignal, sig)
 		wg.Done()
 	}()
 
@@ -290,7 +291,7 @@ func TestKill(t *testing.T) {
 func TestSignal(t *testing.T) {
 	assert := assert.New(t)
 
-	args := []string{"sleep", "1h"}
+	args := []string{"sleep", "3600"}
 	if runtime.GOOS == "windows" {
 		args = []string{"powershell.exe", "-command", "\"sleep 3600\""}
 	}
