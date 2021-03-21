@@ -140,22 +140,19 @@ func TestWait(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
+	now := time.Now().UTC()
 	go func() {
 		_, err := proc.Wait()
 		assert.Nil(err)
 		wg.Done()
 	}()
 
-	n, _ := io.Copy(os.Stdout, proc)
-
-	var res int64
-	if runtime.GOOS == "windows" {
-		res = 8
-	}
-
-	assert.Equal(int64(res), n)
+	io.Copy(os.Stdout, proc)
 
 	wg.Wait()
+
+	diff := time.Now().UTC().Sub(now).Seconds()
+	assert.GreaterOrEqual(diff, float64(5))
 }
 
 func TestCWD(t *testing.T) {
@@ -230,15 +227,6 @@ func TestPID(t *testing.T) {
 	assert.Nil(err)
 	assert.NotEqual(0, pid)
 
-	n, _ := io.Copy(os.Stdout, proc)
-
-	var res int64
-	if runtime.GOOS == "windows" {
-		res = 8
-	}
-
-	assert.Equal(int64(res), n)
-
 	wg.Wait()
 }
 
@@ -276,14 +264,7 @@ func TestKill(t *testing.T) {
 	time.Sleep(1 * time.Second)
 	assert.Nil(proc.Kill())
 
-	n, _ := io.Copy(os.Stdout, proc)
-
-	var res int64
-	if runtime.GOOS == "windows" {
-		res = 8
-	}
-
-	assert.Equal(int64(res), n)
+	io.Copy(os.Stdout, proc)
 
 	wg.Wait()
 }
@@ -321,14 +302,7 @@ func TestSignal(t *testing.T) {
 	time.Sleep(1 * time.Second)
 	assert.Nil(proc.Signal(os.Kill))
 
-	n, _ := io.Copy(os.Stdout, proc)
-
-	var res int64
-	if runtime.GOOS == "windows" {
-		res = 8
-	}
-
-	assert.Equal(int64(res), n)
+	io.Copy(os.Stdout, proc)
 
 	wg.Wait()
 }
