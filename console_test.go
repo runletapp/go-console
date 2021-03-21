@@ -52,7 +52,7 @@ func TestRun(t *testing.T) {
 
 	var args []string
 	if runtime.GOOS == "windows" {
-		args = []string{"echo", "windows"}
+		args = []string{"powershell.exe", "-command", "\"echo windows\""}
 	} else {
 		args = []string{"printf", "with \033[0;31mCOLOR\033[0m"}
 	}
@@ -74,13 +74,13 @@ func TestRun(t *testing.T) {
 }
 
 func TestSize(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skipf("skipped in windows")
-	}
 
 	assert := assert.New(t)
 
 	args := []string{"stty", "size"}
+	if runtime.GOOS == "windows" {
+		args = []string{"powershell.exe", "-command", "echo \"$($Host.UI.RawUI.WindowSize.Height)  $($Host.UI.RawUI.WindowSize.Width)\""}
+	}
 
 	proc, err := New(120, 60)
 	assert.Nil(err)
@@ -89,17 +89,23 @@ func TestSize(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	assert.Truef(bytes.Contains(data, []byte("60 120")), "Does not contain size")
+	os.Stdout.Write(data)
+
+	if runtime.GOOS == "windows" {
+		assert.Truef(bytes.Contains(data, []byte("60")), "Does not contain size")
+		assert.Truef(bytes.Contains(data, []byte("120")), "Does not contain size")
+	} else {
+		assert.Truef(bytes.Contains(data, []byte("60 120")), "Does not contain size")
+	}
 }
 
 func TestSize2(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skipf("skipped in windows")
-	}
-
 	assert := assert.New(t)
 
 	args := []string{"stty", "size"}
+	if runtime.GOOS == "windows" {
+		args = []string{"powershell.exe", "-command", "echo \"$($Host.UI.RawUI.WindowSize.Height)  $($Host.UI.RawUI.WindowSize.Width)\""}
+	}
 
 	proc, err := New(60, 120)
 	assert.Nil(err)
@@ -108,7 +114,12 @@ func TestSize2(t *testing.T) {
 
 	data, _ := ioutil.ReadAll(proc)
 
-	assert.Truef(bytes.Contains(data, []byte("120 60")), "Does not contain size")
+	if runtime.GOOS == "windows" {
+		assert.Truef(bytes.Contains(data, []byte("60")), "Does not contain size")
+		assert.Truef(bytes.Contains(data, []byte("120")), "Does not contain size")
+	} else {
+		assert.Truef(bytes.Contains(data, []byte("120 60")), "Does not contain size")
+	}
 }
 
 func TestWait(t *testing.T) {
@@ -116,7 +127,7 @@ func TestWait(t *testing.T) {
 
 	var args []string
 	if runtime.GOOS == "windows" {
-		args = []string{"sleep", "5s"}
+		args = []string{"powershell.exe", "-command", "\"sleep 5\""}
 	} else {
 		args = []string{"sleep", "5s"}
 	}
@@ -197,6 +208,9 @@ func TestPID(t *testing.T) {
 	assert := assert.New(t)
 
 	args := []string{"sleep", "5s"}
+	if runtime.GOOS == "windows" {
+		args = []string{"powershell.exe", "-command", "\"sleep 5\""}
+	}
 
 	proc, err := New(120, 60)
 	assert.Nil(err)
@@ -232,6 +246,9 @@ func TestKill(t *testing.T) {
 	assert := assert.New(t)
 
 	args := []string{"sleep", "1h"}
+	if runtime.GOOS == "windows" {
+		args = []string{"powershell.exe", "-command", "\"sleep 3600\""}
+	}
 
 	proc, err := New(120, 60)
 	assert.Nil(err)
@@ -274,6 +291,9 @@ func TestSignal(t *testing.T) {
 	assert := assert.New(t)
 
 	args := []string{"sleep", "1h"}
+	if runtime.GOOS == "windows" {
+		args = []string{"powershell.exe", "-command", "\"sleep 3600\""}
+	}
 
 	proc, err := New(120, 60)
 	assert.Nil(err)

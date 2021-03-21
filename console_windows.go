@@ -2,8 +2,11 @@ package console
 
 import (
 	"embed"
+	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"syscall"
 
@@ -64,7 +67,13 @@ func newNative(cols int, rows int) (Console, error) {
 }
 
 func (c *consoleWindows) Start(args []string) error {
+	dllDir, err := c.UnloadEmbeddedDeps()
+	if err != nil {
+		return err
+	}
+
 	opts := winpty.Options{
+		DLLPrefix:   dllDir,
 		InitialCols: uint32(c.initialCols),
 		InitialRows: uint32(c.initialRows),
 		Command:     strings.Join(args, " "),
@@ -81,21 +90,42 @@ func (c *consoleWindows) Start(args []string) error {
 	return nil
 }
 
-func (c *consoleWindows) unloadEmbeddedDeps() (string, error) {
+func (c *consoleWindows) UnloadEmbeddedDeps() (string, error) {
 
 	executableName, err := os.Executable()
 	if err != nil {
 		return "", err
 	}
-	executableName = path.Base(executableName)
+	executableName = filepath.Base(executableName)
 
-	if err := os.MkdirAll(bb, 0755); err != nil {
+	dllDir := filepath.Join(os.TempDir(), fmt.Sprintf("%s_winpty", executableName))
+
+	if err := os.MkdirAll(dllDir, 0755); err != nil {
 		return "", err
 	}
 
-	dllDir := path.join(os.TempDir(), fmt.Sprintf("%s_winpty", executableName))
+	files := []string{"winpty.dll", "winpty-agent.exe"}
+	for _, file := range files {
+		filenameEmbedded := fmt.Sprintf("winpty/%s", file)
+		filenameDisk := path.Join(dllDir, file)
 
-	return "", nil
+		_, statErr := os.Stat(filenameDisk)
+		if statErr == nil {
+			// file is already there, skip it
+			continue
+		}
+
+		data, err := winpty_deps.ReadFile(filenameEmbedded)
+		if err != nil {
+			return "", err
+		}
+
+		if err := ioutil.WriteFile(path.Join(dllDir, file), data, 0644); err != nil {
+			return "", err
+		}
+	}
+
+	return dllDir, nil
 }
 
 func (c *consoleWindows) Read(b []byte) (int, error) {
