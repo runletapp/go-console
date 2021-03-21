@@ -113,6 +113,7 @@ func TestSize2(t *testing.T) {
 	assert.Nil(proc.Start(args))
 
 	data, _ := ioutil.ReadAll(proc)
+	os.Stdout.Write(data)
 
 	if runtime.GOOS == "windows" {
 		assert.Truef(bytes.Contains(data, []byte("60")), "Does not contain size")
