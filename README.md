@@ -1,9 +1,9 @@
 # go-console
 
-[![Build Status](https://travis-ci.com/runletapp/go-console.svg?branch=master)](https://travis-ci.com/runletapp/go-console)
+[![Main](https://github.com/runletapp/go-console/actions/workflows/main.yml/badge.svg)](https://github.com/runletapp/go-console/actions/workflows/main.yml)
 [![GoDoc](https://godoc.org/github.com/runletapp/go-console?status.svg)](https://godoc.org/github.com/runletapp/go-console)
 
-`go-console` is a cross-platform `PTY` interface. On *nix platforms we rely on [pty](https://github.com/kr/pty) and on windows [go-winpty](https://github.com/iamacarpet/go-winpty) (this means that you also need [winpty](https://github.com/rprichard/winpty))
+`go-console` is a cross-platform `PTY` interface. On *nix platforms we rely on [pty](github.com/creack/pty) and on windows [go-winpty](https://github.com/iamacarpet/go-winpty) (go-console will ship [winpty-0.4.3-msvc2015](https://github.com/rprichard/winpty/releases/tag/0.4.3) using `go:embed`, so there's no need to include winpty binaries)
 
 ## Example
 
