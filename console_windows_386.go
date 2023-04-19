@@ -1,5 +1,5 @@
-//go:build amd64
-// +build amd64
+//go:build 386
+// +build 386
 
 package console
 
@@ -27,7 +27,7 @@ var (
 	errERROR_IO_PENDING error = syscall.Errno(errnoERROR_IO_PENDING)
 )
 
-// go:embed winpty/amd64/*
+//go:embed winpty/386/*
 var winpty_deps embed.FS
 
 // errnoErr returns common boxed Errno values, to prevent
