@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 
@@ -109,7 +110,7 @@ func (c *consoleWindows) UnloadEmbeddedDeps() (string, error) {
 
 	files := []string{"winpty.dll", "winpty-agent.exe"}
 	for _, file := range files {
-		filenameEmbedded := fmt.Sprintf("winpty/%s", file)
+		filenameEmbedded := fmt.Sprintf("winpty/%s/%s", runtime.GOARCH, file)
 		filenameDisk := path.Join(dllDir, file)
 
 		_, statErr := os.Stat(filenameDisk)
