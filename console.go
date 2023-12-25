@@ -1,7 +1,7 @@
 package console
 
 import (
-	"github.com/runletapp/go-console/interfaces"
+	"github.com/jm33-m0/go-console/interfaces"
 )
 
 // Console communication interface
